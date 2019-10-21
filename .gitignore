@@ -1,0 +1,13 @@
+node_modules
+build
+
+tests/**/*.jsx
+test/**/*.jsx
+
+.DS_Store
+
+npm-debug.log
+yarn-error.log
+yarn.lock
+.yarnclean
+.vscode
