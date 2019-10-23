@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { hot } from 'react-hot-loader';
+import { hot } from 'react-hot-loader/root';
 
 // const reactLogo = require("./../assets/img/react_logo.svg");\
 
 import '#/assets/scss/App.scss';
-import EditorSkeleton from '#/modules/Skeleton/EditorSkeleton';
+// import EditorSkeleton from '#/modules/Skeleton/EditorSkeleton';
+import EditorSkeleton from '#/modules/Skeleton/index';
 
 class App extends React.Component {
     public render() {
@@ -16,6 +17,4 @@ class App extends React.Component {
     }
 }
 
-declare let module: object;
-
-export default hot(module)(App);
+export default hot(App);

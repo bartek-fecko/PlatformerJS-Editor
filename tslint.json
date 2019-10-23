@@ -10,6 +10,11 @@
             true,
             "single",
             "jsx-double"
-        ]
+        ],
+        "interface-name": [
+            false,
+            "never-prefix"
+        ],
+        "radix": false
     }
 }
