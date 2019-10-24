@@ -10,7 +10,8 @@ export const ResizableLine = styled.span`
    cursor: ew-resize;
 `;
 
-export const Wrapper = styled.span<{ gridArea: string }>`
+export const Wrapper = styled.span<{ gridArea?: string }>`
    position: relative;
+   flex-grow: 0;
    grid-area: ${({ gridArea }) => gridArea};
 `;

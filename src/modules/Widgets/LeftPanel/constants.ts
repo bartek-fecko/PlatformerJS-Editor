@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const LeftPanel = styled.aside`
-   background: orange;
-   /* grid-area: leftPanel; */
+   background-color: green;
+   height: 100%;
+   min-width: 100px;
 `;

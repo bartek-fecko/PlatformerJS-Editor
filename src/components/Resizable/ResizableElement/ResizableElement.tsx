@@ -2,17 +2,16 @@ import * as React from 'react';
 import * as C from './constants';
 
 interface ResizableElementProps {
-   gridArea: string;
    noResize?: boolean;
-   ref: React.Ref<HTMLElement>;
+   ref?: React.Ref<HTMLElement>;
 }
 
 export const ResizableElement: React.FC<ResizableElementProps> = React.forwardRef((
-   { children, gridArea, noResize }, ref) => {
+   { children, noResize }, ref) => {
    return (
-      <C.Wrapper gridArea={gridArea} ref={ref} >
+      <C.Wrapper ref={ref} data-is-resizing-element>
          {children}
-         {noResize || <C.ResizableLine />}
+         {noResize || <C.ResizableLine data-is-handler/>}
       </C.Wrapper>
    );
 });

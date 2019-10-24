@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 export const Toolbar = styled.div`
-   display: flex;
    position: relative;
    background: red;
+   min-height: 1.8em;
    /* grid-area: toolbar; */
 `;
