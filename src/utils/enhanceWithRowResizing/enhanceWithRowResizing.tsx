@@ -4,14 +4,16 @@ import * as React from 'react';
 import * as C from './constants';
 
 export interface UseResizingElementsProps {
-   minElementWidth: number;
+   minElementWidth?: number;
 }
 
-export const useResizingRowElements = ({ minElementWidth }: UseResizingElementsProps) => {
+export const useResizingRowElements = ({ minElementWidth = 100 }: UseResizingElementsProps) => {
    let isHandlerDragging: boolean = false;
    let isNowClicked: boolean = false;
    let actualResizedElement: HTMLElement;
    let actualResizedElementRightSibling: HTMLElement;
+   let resizedElementWidth: string;
+   let previousMousePosition: number;
    const resizableRowRef = React.useRef(null);
 
    const addStartListener = () => {
@@ -41,22 +43,40 @@ export const useResizingRowElements = ({ minElementWidth }: UseResizingElementsP
 
          const resizedElementLeftOffset = actualResizedElement.getBoundingClientRect().left;
          const resizedElementNextWidth = e.clientX - resizedElementLeftOffset;
-         actualResizedElement.style.width = `${Math.max(minElementWidth, resizedElementNextWidth)}px`;
+         const computedMinWidth = getMinWidth(actualResizedElement.firstChild as HTMLElement) || minElementWidth;
+
          actualResizedElement.style.flexGrow = '0';
 
          if (actualResizedElementRightSibling) {
             actualResizedElementRightSibling.style.flexGrow = '1';
+            const nextSiblingMinWidth = getMinWidth(actualResizedElementRightSibling.firstChild as HTMLElement);
+
+            if ((actualResizedElementRightSibling.getBoundingClientRect().width - 20 > nextSiblingMinWidth)
+               || e.clientX < previousMousePosition
+            ) {
+               resizedElementWidth = `${Math.max(computedMinWidth, resizedElementNextWidth)}px`;
+               requestAnimationFrame(() => {
+                  actualResizedElement.style.width = resizedElementWidth;
+               });
+            }
          }
+         previousMousePosition = e.clientX;
       });
    };
+
+   const getMinWidth = (element: HTMLElement) => parseInt(getComputedStyle(element).minWidth);
 
    const addRemoveMoveListener = () => {
       document.addEventListener('mouseup', () => {
          isHandlerDragging = false;
          if (actualResizedElementRightSibling) {
             let nextElementWidth = actualResizedElementRightSibling.getBoundingClientRect().width;
-            nextElementWidth = Math.max(minElementWidth, nextElementWidth);
-            actualResizedElementRightSibling.style.width = nextElementWidth + 'px';
+            // tslint:disable-next-line: max-line-length
+            const computedMinWidth = getMinWidth(actualResizedElementRightSibling.firstChild as HTMLElement) || minElementWidth;
+            nextElementWidth = Math.max(computedMinWidth, nextElementWidth);
+            requestAnimationFrame(() => {
+               actualResizedElementRightSibling.style.width = `${nextElementWidth}px`;
+            });
             actualResizedElementRightSibling.style.flexGrow = '0';
          }
       });
@@ -68,7 +88,11 @@ export const useResizingRowElements = ({ minElementWidth }: UseResizingElementsP
       addRemoveMoveListener();
    }, []);
 
-   const ResizableRow = ({ children }) => {
+   interface ResizableRowProps {
+      children: React.ReactElement[];
+   }
+
+   const ResizableRow = ({ children }: ResizableRowProps) => {
       return (
          <C.Wrapper ref={resizableRowRef}>
             {React.Children.map(children, (child) => {
