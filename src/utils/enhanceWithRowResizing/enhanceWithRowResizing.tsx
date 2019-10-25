@@ -27,6 +27,7 @@ export const useResizingRowElements = ({ minElementWidth = 100 }: UseResizingEle
          actualResizedElementRightSibling = actualResizedElement.nextElementSibling as HTMLElement;
          isHandlerDragging = true;
          isNowClicked = true;
+         e.preventDefault();
       });
    };
 
@@ -51,13 +52,15 @@ export const useResizingRowElements = ({ minElementWidth = 100 }: UseResizingEle
             actualResizedElementRightSibling.style.flexGrow = '1';
             const nextSiblingMinWidth = getMinWidth(actualResizedElementRightSibling.firstChild as HTMLElement);
 
-            if ((actualResizedElementRightSibling.getBoundingClientRect().width - 20 > nextSiblingMinWidth)
+            if ((actualResizedElementRightSibling.getBoundingClientRect().width > nextSiblingMinWidth)
                || e.clientX < previousMousePosition
             ) {
                resizedElementWidth = `${Math.max(computedMinWidth, resizedElementNextWidth)}px`;
                requestAnimationFrame(() => {
                   actualResizedElement.style.width = resizedElementWidth;
                });
+            } else {
+               actualResizedElementRightSibling.style.width = `${nextSiblingMinWidth}px`;
             }
          }
          previousMousePosition = e.clientX;
