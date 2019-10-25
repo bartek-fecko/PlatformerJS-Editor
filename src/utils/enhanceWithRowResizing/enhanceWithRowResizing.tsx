@@ -12,8 +12,6 @@ export const useResizingRowElements = ({ minElementWidth = 100 }: UseResizingEle
    let isNowClicked: boolean = false;
    let actualResizedElement: HTMLElement;
    let actualResizedElementRightSibling: HTMLElement;
-   let resizedElementWidth: string;
-   let previousMousePosition: number;
    const resizableRowRef = React.useRef(null);
 
    const addStartListener = () => {
@@ -53,17 +51,16 @@ export const useResizingRowElements = ({ minElementWidth = 100 }: UseResizingEle
             const nextSiblingMinWidth = getMinWidth(actualResizedElementRightSibling.firstChild as HTMLElement);
 
             if ((actualResizedElementRightSibling.getBoundingClientRect().width > nextSiblingMinWidth)
-               || e.clientX < previousMousePosition
+               || e.clientX < actualResizedElement.getBoundingClientRect().right
             ) {
-               resizedElementWidth = `${Math.max(computedMinWidth, resizedElementNextWidth)}px`;
+               const resizedElementWidth = `${Math.max(computedMinWidth, resizedElementNextWidth)}px`;
                requestAnimationFrame(() => {
                   actualResizedElement.style.width = resizedElementWidth;
                });
             } else {
-               actualResizedElementRightSibling.style.width = `${nextSiblingMinWidth}px`;
+               actualResizedElementRightSibling.style.minWidth = `${nextSiblingMinWidth}px`;
             }
          }
-         previousMousePosition = e.clientX;
       });
    };
 
